@@ -1,19 +1,15 @@
 {
 	"background_color": "#000000",
 	"theme_color": "#000000",
-	"name": "Sapper Template - Quick and easy template.",
-	"short_name": "template",
+	"name": "Axial Launch - Token Tracking.",
+	"short_name": "Axial Launch",
 	"display": "minimal-ui",
 	"start_url": "/",
 	"icons": [
 		{
-			"src": "favicon.svg",
+			"src": "token.png",
 			"sizes": "any",
 			"purpose": "any maskable"
-		},
-		{
-			"src": "splash-template.png",
-			"sizes": "512x512"
 		}
 	]
 }

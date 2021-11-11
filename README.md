@@ -1,3 +1,3 @@
-# Sapper Template
+# Axial Launch
 
-Template for quick and easy Sapper app setups.
+Quick app to track the launch of Axial's new token.

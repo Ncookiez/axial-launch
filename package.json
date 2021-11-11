@@ -1,6 +1,6 @@
 {
-  "name": "template",
-  "description": "",
+  "name": "axial-launch",
+  "description": "Quick app to track the launch of Axial's new token.",
   "version": "0.0.1",
   "scripts": {
     "dev": "sapper dev",

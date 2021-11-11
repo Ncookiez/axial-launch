@@ -10,13 +10,7 @@ polka()
 	.use(
 		compression({ threshold: 0 }),
 		sirv('static', { dev }),
-		sapper.middleware({
-
-			// Session Variables:
-			session: () => ({
-				// <TODO>
-			})
-		})
+		sapper.middleware()
 	)
 	.listen(PORT, err => {
 		if (err) console.error('error', err);

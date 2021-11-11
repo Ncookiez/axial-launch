@@ -2,10 +2,8 @@
 
 	// Imports:
 	import { onMount } from 'svelte';
-	import { stores } from '@sapper/app';
 	
 	// Initializations & Exports:
-	const { session } = stores();
 	export let segment;
 	
 	onMount(async () => {
