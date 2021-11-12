@@ -4,12 +4,14 @@
 	import { onMount } from 'svelte';
 
 	// Initializations:
+	let price = 0;
 	let supply = 0;
 	let treasuryBalance = 0;
 	let masterChefBalance = 0;
 	let pangolinLiquidity = 0;
 	let traderJoeLiquidity = 0;
 	let axial = '0xcF8419A615c57511807236751c0AF38Db4ba3351';
+	let wavax = '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7';
 	let treasury = '0x4980ad7ccb304f7d3c5053aa1131ed1edaf48809';
 	let masterChef = '0x958c0d0baa8f220846d3966742d4fb5edc5493d3';
 	let traderJoePair = '0x5305A6c4DA88391F4A9045bF2ED57F4BF0cF4f62';
@@ -21,13 +23,19 @@
 	let wei = 10 ** 18;
 
 	// Function to get AXIAL Info:
-	const getInfo = (contract, i) => {
+	const getInfo = (contract, wavaxContract, i) => {
 		setTimeout(async () => {
+			let traderJoeWAVAX = parseInt(await wavaxContract.balanceOf(traderJoePair)) / wei;
+			let pangolinWAVAX = parseInt(await wavaxContract.balanceOf(pangolinPair)) / wei;
+			let avaxPrice = (await axios.get('https://api.coingecko.com/api/v3/simple/token_price/avalanche?contract_addresses=' + wavax + '&vs_currencies=usd')).data[wavax].usd;
+			traderJoeLiquidity = parseInt(await contract.balanceOf(traderJoePair)) / wei;
+			pangolinLiquidity = parseInt(await contract.balanceOf(pangolinPair)) / wei;
+			let traderJoePrice = (avaxPrice * traderJoeWAVAX) / traderJoeLiquidity;
+			let pangolinPrice = (avaxPrice * pangolinWAVAX) / pangolinLiquidity;
+			price = (traderJoePrice + pangolinPrice) / 2;
 			supply = parseInt(await contract.totalSupply()) / wei;
 			treasuryBalance = parseInt(await contract.balanceOf(treasury)) / wei;
 			masterChefBalance = parseInt(await contract.balanceOf(masterChef)) / wei;
-			traderJoeLiquidity = parseInt(await contract.balanceOf(traderJoePair)) / wei;
-			pangolinLiquidity = parseInt(await contract.balanceOf(pangolinPair)) / wei;
 			if(i === 999) {
 				console.log('Stopping automatic reloading.');
 			}
@@ -39,13 +47,14 @@
 		// Loading Particles:
 		particlesJS.load('particles', 'particles.json');
 
-		// Initializing AXIAL Contract:
+		// Initializing Contracts:
 		let contract = new ethers.Contract(axial, minABI, ethers_avax);
+		let wavaxContract = new ethers.Contract(wavax, minABI, ethers_avax);
 
 		// Getting AXIAL Info:
 		try {
 			for(let i = 0; i < 1000; i++) {
-				getInfo(contract, i);
+				getInfo(contract, wavaxContract, i);
 			}
 		} catch {
 			console.log('Stopping automatic reloading.');
@@ -76,11 +85,30 @@
 
 	<!-- AXIAL Token Stats -->
 	<div class="stats">
-		<p><strong>Total Supply:</strong> {supply.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL</p>
-		<p><strong>Treasury Balance:</strong> {treasuryBalance.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL</p>
-		<p><strong>Unclaimed Token Rewards:</strong> {masterChefBalance.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL</p>
-		<p><strong>Trader Joe Liquidity:</strong> {traderJoeLiquidity.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL</p>
-		<p><strong>Pangolin Liquidity:</strong> {pangolinLiquidity.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL</p>
+		<span>
+			<h2>Esimated AXIAL Price:</h2>
+			<p>${price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+		</span>
+		<span>
+			<h2>Total Supply:</h2>
+			<p>{supply.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL</p>
+		</span>
+		<span>
+			<h2>Treasury Balance:</h2>
+			<p>{treasuryBalance.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL (${(treasuryBalance * price).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})})</p>
+		</span>
+		<span>
+			<h2>Unclaimed Token Rewards:</h2>
+			<p>{masterChefBalance.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL (${(masterChefBalance * price).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})})</p>
+		</span>
+		<span>
+			<h2>Trader Joe Liquidity:</h2>
+			<p>{traderJoeLiquidity.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL (${(traderJoeLiquidity * price).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})})</p>
+		</span>
+		<span>
+			<h2>Pangolin Liquidity:</h2>
+			<p>{pangolinLiquidity.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL (${(pangolinLiquidity * price).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})})</p>
+		</span>
 	</div>
 
 	<!-- Links -->
@@ -127,14 +155,23 @@
 	.stats {
 		display: flex;
 		flex-direction: column;
-		flex: 1;
 		justify-content: center;
 		align-items: center;
-		font-size: 1.5em;
+		flex: 1;
 	}
 
-	.stats > p {
-		margin: 3vh 0;
+	.stats > span {
+		display: flex;
+		margin: 1.5vh 0;
+	}
+
+	.stats > span > h2 {
+		margin: 0;
+	}
+
+	.stats > span > p {
+		font-size: 1.2em;
+		margin: .2em .5em;
 	}
 
 	.links {
@@ -149,7 +186,7 @@
 	}
 
 	.links > p {
-		margin-inline: 1vw;
+		margin: 3vh 1vw;
 	}
 
 </style>
