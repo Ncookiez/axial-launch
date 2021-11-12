@@ -32,7 +32,7 @@
 			pangolinLiquidity = parseInt(await contract.balanceOf(pangolinPair)) / wei;
 			let traderJoePrice = (avaxPrice * traderJoeWAVAX) / traderJoeLiquidity;
 			let pangolinPrice = (avaxPrice * pangolinWAVAX) / pangolinLiquidity;
-			price = (traderJoePrice + pangolinPrice) / 2;
+			price = ((traderJoePrice * traderJoeLiquidity) + (pangolinPrice * pangolinLiquidity)) / (traderJoeLiquidity + pangolinLiquidity);
 			supply = parseInt(await contract.totalSupply()) / wei;
 			treasuryBalance = parseInt(await contract.balanceOf(treasury)) / wei;
 			masterChefBalance = parseInt(await contract.balanceOf(masterChef)) / wei;
@@ -87,7 +87,7 @@
 	<div class="stats">
 		<span>
 			<h2>Estimated AXIAL Price:</h2>
-			<p>${price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+			<p>${price.toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4})}</p>
 		</span>
 		<span>
 			<h2>Total Supply:</h2>
