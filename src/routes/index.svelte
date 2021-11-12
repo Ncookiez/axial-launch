@@ -86,7 +86,7 @@
 	<!-- AXIAL Token Stats -->
 	<div class="stats">
 		<span>
-			<h2>Esimated AXIAL Price:</h2>
+			<h2>Estimated AXIAL Price:</h2>
 			<p>${price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
 		</span>
 		<span>
