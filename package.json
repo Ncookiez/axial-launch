@@ -1,7 +1,7 @@
 {
   "name": "axial-launch",
   "description": "Quick app to track the launch of Axial's new token.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper build --legacy",

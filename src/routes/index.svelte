@@ -118,6 +118,8 @@
 		<a href="https://app.axial.exchange">App</a>
 		<p>|</p>
 		<a href="https://docs.axial.exchange">Docs</a>
+		<p>|</p>
+		<span>Made with &nbsp;❤&nbsp; by Ncookie</span>
 	</div>
 </div>
 
