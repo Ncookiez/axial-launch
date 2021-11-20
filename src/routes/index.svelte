@@ -7,13 +7,14 @@
 	let price = 0;
 	let supply = 0;
 	let treasuryBalance = 0;
-	let masterChefBalance = 0;
+	let unclaimedBalance = 0;
 	let pangolinLiquidity = 0;
 	let traderJoeLiquidity = 0;
 	let axial = '0xcF8419A615c57511807236751c0AF38Db4ba3351';
 	let wavax = '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7';
 	let treasury = '0x4980ad7ccb304f7d3c5053aa1131ed1edaf48809';
 	let masterChef = '0x958c0d0baa8f220846d3966742d4fb5edc5493d3';
+	let xsnobDistributor = '0x084cfE7BA1C91d35Fec5015ca65E92Db41A3C9f7';
 	let traderJoePair = '0x5305A6c4DA88391F4A9045bF2ED57F4BF0cF4f62';
 	let pangolinPair = '0x53d4bF164c53547b4278A0352C292162C154AfE5';
 	let minABI = [
@@ -35,7 +36,9 @@
 			price = ((traderJoePrice * traderJoeLiquidity) + (pangolinPrice * pangolinLiquidity)) / (traderJoeLiquidity + pangolinLiquidity);
 			supply = parseInt(await contract.totalSupply()) / wei;
 			treasuryBalance = parseInt(await contract.balanceOf(treasury)) / wei;
-			masterChefBalance = parseInt(await contract.balanceOf(masterChef)) / wei;
+			let masterChefBalance = parseInt(await contract.balanceOf(masterChef)) / wei;
+			let xsnobDistributorBalance = parseInt(await contract.balanceOf(xsnobDistributor)) / wei;
+			unclaimedBalance = masterChefBalance + xsnobDistributorBalance
 			if(i === 999) {
 				console.log('Stopping automatic reloading.');
 			}
@@ -98,8 +101,8 @@
 			<p>{treasuryBalance.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL (${(treasuryBalance * price).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})})</p>
 		</span>
 		<span>
-			<h2>Unclaimed Token Rewards:</h2>
-			<p>{masterChefBalance.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL (${(masterChefBalance * price).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})})</p>
+			<h2>Unclaimed Rewards:</h2>
+			<p>{unclaimedBalance.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} AXIAL (${(unclaimedBalance * price).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})})</p>
 		</span>
 		<span>
 			<h2>Trader Joe Liquidity:</h2>
